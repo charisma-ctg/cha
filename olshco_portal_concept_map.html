@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OLSHCO College Portal – Concept Map</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f4f0;
+    color: #1a1a18;
+    padding: 24px 16px;
+    min-height: 100vh;
+  }
+  h1 {
+    font-size: 18px; font-weight: 500;
+    text-align: center; margin-bottom: 4px;
+    color: #1a1a18;
+  }
+  .subtitle {
+    font-size: 13px; color: #6b6a64;
+    text-align: center; margin-bottom: 16px;
+  }
+  #tabs {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 14px;
+  }
+  .tab-btn {
+    padding: 5px 14px; font-size: 12px; border-radius: 20px;
+    border: 0.5px solid #b4b2a9;
+    background: #fff; color: #5f5e5a;
+    cursor: pointer; transition: all .15s;
+    font-family: inherit;
+  }
+  .tab-btn:hover { background: #e8e6df; color: #1a1a18; }
+  .tab-btn.active { background: #1a1a18; color: #fff; border-color: transparent; }
+  .map-wrap { overflow-x: auto; }
+  svg { display: block; max-width: 100%; }
+  .node { cursor: pointer; }
+  .node:hover > rect, .node:hover > circle { opacity: 0.8; }
+  #info-box {
+    margin-top: 14px;
+    min-height: 64px; padding: 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 13px; color: #5f5e5a;
+    line-height: 1.6;
+    border-left: 3px solid #888780;
+    transition: border-color .2s;
+    max-width: 760px; margin-left: auto; margin-right: auto;
+  }
+  #info-title { font-weight: 500; font-size: 14px; color: #1a1a18; margin-bottom: 3px; }
+
+  /* ── color ramps ── */
+  .c-purple rect, .c-purple circle { fill: #EEEDFE; stroke: #534AB7; }
+  .c-purple text { fill: #3C3489; }
+  .c-coral  rect, .c-coral  circle { fill: #FAECE7; stroke: #993C1D; }
+  .c-coral  text { fill: #712B13; }
+  .c-teal   rect, .c-teal   circle { fill: #E1F5EE; stroke: #0F6E56; }
+  .c-teal   text { fill: #085041; }
+  .c-blue   rect, .c-blue   circle { fill: #E6F1FB; stroke: #185FA5; }
+  .c-blue   text { fill: #0C447C; }
+  .c-amber  rect, .c-amber  circle { fill: #FAEEDA; stroke: #854F0B; }
+  .c-amber  text { fill: #633806; }
+  .c-green  rect, .c-green  circle { fill: #EAF3DE; stroke: #3B6D11; }
+  .c-green  text { fill: #27500A; }
+
+  /* text helpers */
+  .th { font-size: 14px; font-weight: 500; fill: #1a1a18; }
+  .ts { font-size: 12px; fill: #5f5e5a; }
+  .tl { font-size: 10px; fill: #888780; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #1c1c1a; color: #e0dfd7; }
+    h1 { color: #e0dfd7; }
+    .subtitle { color: #888780; }
+    .tab-btn { background: #2c2c2a; color: #b4b2a9; border-color: #444441; }
+    .tab-btn:hover { background: #3d3d3a; color: #e0dfd7; }
+    .tab-btn.active { background: #e0dfd7; color: #1c1c1a; }
+    #info-box { background: #2c2c2a; color: #888780; border-left-color: #444441; }
+    #info-title { color: #e0dfd7; }
+    .c-purple rect, .c-purple circle { fill: #3C3489; stroke: #AFA9EC; }
+    .c-purple text { fill: #CECBF6; }
+    .c-coral  rect, .c-coral  circle { fill: #712B13; stroke: #F0997B; }
+    .c-coral  text { fill: #F5C4B3; }
+    .c-teal   rect, .c-teal   circle { fill: #085041; stroke: #5DCAA5; }
+    .c-teal   text { fill: #9FE1CB; }
+    .c-blue   rect, .c-blue   circle { fill: #0C447C; stroke: #85B7EB; }
+    .c-blue   text { fill: #B5D4F4; }
+    .c-amber  rect, .c-amber  circle { fill: #633806; stroke: #EF9F27; }
+    .c-amber  text { fill: #FAC775; }
+    .c-green  rect, .c-green  circle { fill: #27500A; stroke: #97C459; }
+    .c-green  text { fill: #C0DD97; }
+    .th { fill: #e0dfd7; }
+    .ts { fill: #b4b2a9; }
+    .tl { fill: #5f5e5a; }
+  }
+</style>
+</head>
+<body>
+
+<h1>OLSHCO College Portal</h1>
+<p class="subtitle">Concept Map — Click any node to learn more</p>
+
+<div id="tabs">
+  <button class="tab-btn active" onclick="showAll(this)">All Modules</button>
+  <button class="tab-btn" onclick="highlight(this,'academic')">Academic</button>
+  <button class="tab-btn" onclick="highlight(this,'finance')">Finance</button>
+  <button class="tab-btn" onclick="highlight(this,'services')">Student Services</button>
+  <button class="tab-btn" onclick="highlight(this,'admin')">Admin</button>
+  <button class="tab-btn" onclick="highlight(this,'comms')">Communication</button>
+  <button class="tab-btn" onclick="highlight(this,'library')">Library</button>
+</div>
+
+<div class="map-wrap">
+<svg width="100%" viewBox="0 0 680 700" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+    markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- ── CENTER to BRANCHES ── -->
+<line x1="340" y1="295" x2="192" y2="178" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#arrow)"/>
+<line x1="340" y1="285" x2="510" y2="178" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#arrow)"/>
+<line x1="302" y1="310" x2="96"  y2="345" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#arrow)"/>
+<line x1="378" y1="310" x2="584" y2="345" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#arrow)"/>
+<line x1="318" y1="322" x2="175" y2="500" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#arrow)"/>
+<line x1="362" y1="322" x2="508" y2="500" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#arrow)"/>
+
+<!-- ── ACADEMIC leaves ── -->
+<line x1="160" y1="166" x2="62"  y2="88"  stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="190" y1="163" x2="190" y2="88"  stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="220" y1="166" x2="310" y2="88"  stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+<!-- ── FINANCE leaves ── -->
+<line x1="486" y1="166" x2="400" y2="88"  stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="516" y1="163" x2="516" y2="88"  stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="545" y1="166" x2="616" y2="88"  stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+<!-- ── STUDENT SERVICES leaves ── -->
+<line x1="72"  y1="358" x2="30"  y2="452" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="96"  y1="362" x2="96"  y2="452" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="120" y1="358" x2="160" y2="452" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+<!-- ── ADMIN leaves ── -->
+<line x1="560" y1="358" x2="514" y2="452" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="584" y1="362" x2="584" y2="452" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="610" y1="358" x2="648" y2="452" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+<!-- ── COMMUNICATION leaves ── -->
+<line x1="152" y1="514" x2="78"  y2="608" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="176" y1="518" x2="176" y2="608" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="200" y1="514" x2="270" y2="608" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+<!-- ── LIBRARY leaves ── -->
+<line x1="484" y1="514" x2="418" y2="608" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="508" y1="518" x2="508" y2="608" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+<line x1="534" y1="514" x2="592" y2="608" stroke="#d3d1c7" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+<!-- ── CROSS LINKS (dashed) ── -->
+<path d="M218 168 Q290 240 308 288" stroke="#d3d1c7" stroke-width="0.7"
+  stroke-dasharray="4 3" fill="none" marker-end="url(#arrow)"/>
+<path d="M484 168 Q408 240 372 288" stroke="#d3d1c7" stroke-width="0.7"
+  stroke-dasharray="4 3" fill="none" marker-end="url(#arrow)"/>
+<text class="tl" x="244" y="238" text-anchor="middle">grades → clearance</text>
+<text class="tl" x="436" y="238" text-anchor="middle">fees → clearance</text>
+
+<!-- ════════════ CENTER ════════════ -->
+<g class="node" data-group="center"
+  onclick="showInfo('OLSHCO College Portal',
+    'The unified digital gateway of Our Lady of the Sacred Heart College. Connects students, faculty, and administrators to all academic, financial, and campus services — accessible anytime, anywhere.','#444441')">
+  <rect x="218" y="275" width="244" height="62" rx="14"
+    fill="#ffffff" stroke="#444441" stroke-width="2"/>
+  <text class="th" x="340" y="297" text-anchor="middle" dominant-baseline="central"
+    style="font-size:15px">OLSHCO College Portal</text>
+  <text class="ts" x="340" y="318" text-anchor="middle" dominant-baseline="central">integrated campus system</text>
+</g>
+
+<!-- ════════════ ACADEMIC (purple) ════════════ -->
+<g class="node c-purple" data-group="academic"
+  onclick="showInfo('Academic Module',
+    'Covers all course-related activities: enrollment, grade viewing, class schedules, and curriculum management. Faculty post grades; students monitor academic progress in real time.','#534AB7')">
+  <rect x="116" y="144" width="152" height="46" rx="9" stroke-width="0.5"/>
+  <text class="th" x="192" y="162" text-anchor="middle" dominant-baseline="central">Academic</text>
+  <text class="ts" x="192" y="178" text-anchor="middle" dominant-baseline="central">courses &amp; records</text>
+</g>
+<g class="node c-purple" data-group="academic"
+  onclick="showInfo('Enrollment',
+    'Enroll in subjects per semester, view available sections, check prerequisites, manage academic load, and confirm enrollment status online.')">
+  <rect x="20" y="66" width="86" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="63" y="82" text-anchor="middle" dominant-baseline="central">Enrollment</text>
+</g>
+<g class="node c-purple" data-group="academic"
+  onclick="showInfo('Grades &amp; CoG',
+    'Faculty submit grades online; students view real-time grades. Official Certificates of Grades (CoG) and transcripts can be requested directly through the portal.')">
+  <rect x="148" y="66" width="86" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="191" y="82" text-anchor="middle" dominant-baseline="central">Grades &amp; CoG</text>
+</g>
+<g class="node c-purple" data-group="academic"
+  onclick="showInfo('Schedules',
+    'View personal class timetables, room assignments, section details, and faculty information. Faculty see their full teaching load and room utilization per term.')">
+  <rect x="270" y="66" width="86" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="313" y="82" text-anchor="middle" dominant-baseline="central">Schedules</text>
+</g>
+
+<!-- ════════════ FINANCE (coral) ════════════ -->
+<g class="node c-coral" data-group="finance"
+  onclick="showInfo('Finance Module',
+    'Manages tuition fees, payment schedules, scholarships, and financial clearance. Students can view their balance, pay online, and track payment history — reducing trips to the cashier.','#993C1D')">
+  <rect x="412" y="144" width="152" height="46" rx="9" stroke-width="0.5"/>
+  <text class="th" x="488" y="162" text-anchor="middle" dominant-baseline="central">Finance</text>
+  <text class="ts" x="488" y="178" text-anchor="middle" dominant-baseline="central">fees &amp; payments</text>
+</g>
+<g class="node c-coral" data-group="finance"
+  onclick="showInfo('Tuition &amp; Fees',
+    'View itemized tuition, miscellaneous, and other fees per semester. Supports installment plans, payment deadlines, and penalty notifications.')">
+  <rect x="358" y="66" width="86" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="401" y="82" text-anchor="middle" dominant-baseline="central">Tuition &amp; Fees</text>
+</g>
+<g class="node c-coral" data-group="finance"
+  onclick="showInfo('Online Payment',
+    'Pay via GCash, bank transfer, or OTC. Official receipts and payment confirmations are generated automatically and stored in the portal.')">
+  <rect x="474" y="66" width="86" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="517" y="82" text-anchor="middle" dominant-baseline="central">Online Payment</text>
+</g>
+<g class="node c-coral" data-group="finance"
+  onclick="showInfo('Scholarships',
+    'Submit scholarship applications, track subsidy status, and view grant disbursements. The Finance Office approves and manages scholar records through the portal.')">
+  <rect x="578" y="66" width="86" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="621" y="82" text-anchor="middle" dominant-baseline="central">Scholarships</text>
+</g>
+
+<!-- ════════════ STUDENT SERVICES (teal) ════════════ -->
+<g class="node c-teal" data-group="services"
+  onclick="showInfo('Student Services',
+    'A one-stop portal for student requests — documents, guidance counseling, and health records. Minimizes in-person visits to the Registrar, OSA, and clinic.','#0F6E56')">
+  <rect x="16" y="320" width="160" height="46" rx="9" stroke-width="0.5"/>
+  <text class="th" x="96" y="338" text-anchor="middle" dominant-baseline="central">Student Services</text>
+  <text class="ts" x="96" y="354" text-anchor="middle" dominant-baseline="central">registrar &amp; OSA</text>
+</g>
+<g class="node c-teal" data-group="services"
+  onclick="showInfo('Document Requests',
+    'Request official documents online: Form 137, transcript, enrollment certificate, good moral certificate, and honorable dismissal. Track processing status in real time.')">
+  <rect x="4" y="440" width="54" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="31" y="456" text-anchor="middle" dominant-baseline="central">Docs</text>
+</g>
+<g class="node c-teal" data-group="services"
+  onclick="showInfo('Guidance Office',
+    'Book counseling appointments online, access wellness and mental health resources, and submit concerns to the Guidance and Counseling Center.')">
+  <rect x="68" y="440" width="56" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="96" y="456" text-anchor="middle" dominant-baseline="central">Guidance</text>
+</g>
+<g class="node c-teal" data-group="services"
+  onclick="showInfo('Health Services',
+    'Access the clinic schedule, submit medical certificates, and view immunization records required for enrollment and clearance processing.')">
+  <rect x="136" y="440" width="56" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="164" y="456" text-anchor="middle" dominant-baseline="central">Health</text>
+</g>
+
+<!-- ════════════ ADMIN (blue) ════════════ -->
+<g class="node c-blue" data-group="admin"
+  onclick="showInfo('Admin &amp; Security',
+    'Manages all user accounts, roles, and access levels. Only authorized IT staff can access this module. Handles system-wide settings and CHED compliance reporting.','#185FA5')">
+  <rect x="504" y="320" width="160" height="46" rx="9" stroke-width="0.5"/>
+  <text class="th" x="584" y="338" text-anchor="middle" dominant-baseline="central">Admin &amp; Security</text>
+  <text class="ts" x="584" y="354" text-anchor="middle" dominant-baseline="central">accounts &amp; access</text>
+</g>
+<g class="node c-blue" data-group="admin"
+  onclick="showInfo('User Management',
+    'Create, update, and deactivate accounts for students, faculty, and staff. Role-based access ensures each user sees only their permitted modules and data.')">
+  <rect x="490" y="440" width="56" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="518" y="456" text-anchor="middle" dominant-baseline="central">Users</text>
+</g>
+<g class="node c-blue" data-group="admin"
+  onclick="showInfo('Reports &amp; Analytics',
+    'Generate enrollment reports, financial summaries, grade distributions, and CHED compliance documents. Data can be exported in PDF or Excel format.')">
+  <rect x="556" y="440" width="58" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="585" y="456" text-anchor="middle" dominant-baseline="central">Reports</text>
+</g>
+<g class="node c-blue" data-group="admin"
+  onclick="showInfo('Audit Logs',
+    'Every action in the portal — login, grade submission, payment — is time-stamped and recorded. Supports IT security audits and data integrity checks.')">
+  <rect x="624" y="440" width="54" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="651" y="456" text-anchor="middle" dominant-baseline="central">Audit</text>
+</g>
+
+<!-- ════════════ COMMUNICATION (amber) ════════════ -->
+<g class="node c-amber" data-group="comms"
+  onclick="showInfo('Communication',
+    'Keeps the campus community connected through official announcements, internal messaging, and an academic calendar — all within the portal.','#854F0B')">
+  <rect x="102" y="488" width="148" height="46" rx="9" stroke-width="0.5"/>
+  <text class="th" x="176" y="506" text-anchor="middle" dominant-baseline="central">Communication</text>
+  <text class="ts" x="176" y="522" text-anchor="middle" dominant-baseline="central">notices &amp; messaging</text>
+</g>
+<g class="node c-amber" data-group="comms"
+  onclick="showInfo('Announcements',
+    'Official school-wide and department-specific announcements posted by admin, registrar, OSA, and finance — organized and archived for easy reference.')">
+  <rect x="40" y="596" width="80" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="80" y="612" text-anchor="middle" dominant-baseline="central">Notices</text>
+</g>
+<g class="node c-amber" data-group="comms"
+  onclick="showInfo('Internal Messaging',
+    'Direct messaging between students and faculty or staff. Professors can broadcast messages to their entire class section within the portal.')">
+  <rect x="140" y="596" width="72" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="176" y="612" text-anchor="middle" dominant-baseline="central">Messaging</text>
+</g>
+<g class="node c-amber" data-group="comms"
+  onclick="showInfo('Academic Calendar',
+    'View enrollment periods, exam schedules, holidays, deadlines, and school events. Synced across all portal modules to keep everyone informed.')">
+  <rect x="234" y="596" width="74" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="271" y="612" text-anchor="middle" dominant-baseline="central">Calendar</text>
+</g>
+
+<!-- ════════════ LIBRARY (green) ════════════ -->
+<g class="node c-green" data-group="library"
+  onclick="showInfo('Library &amp; Resources',
+    'Provides access to the college library catalog, digital textbooks, research databases, and the Learning Management System (LMS) for blended and online classes.','#3B6D11')">
+  <rect x="432" y="488" width="152" height="46" rx="9" stroke-width="0.5"/>
+  <text class="th" x="508" y="506" text-anchor="middle" dominant-baseline="central">Library &amp; Resources</text>
+  <text class="ts" x="508" y="522" text-anchor="middle" dominant-baseline="central">learning materials</text>
+</g>
+<g class="node c-green" data-group="library"
+  onclick="showInfo('OPAC',
+    'Online Public Access Catalog — search books, journals, and theses in the OLSHCO library. Check availability, reserve copies, and renew borrowed materials.')">
+  <rect x="384" y="596" width="60" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="414" y="612" text-anchor="middle" dominant-baseline="central">OPAC</text>
+</g>
+<g class="node c-green" data-group="library"
+  onclick="showInfo('E-Library',
+    'Access digital textbooks, e-journals, research databases, and downloadable reference materials for all academic programs offered at OLSHCO.')">
+  <rect x="456" y="596" width="70" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="491" y="612" text-anchor="middle" dominant-baseline="central">E-Library</text>
+</g>
+<g class="node c-green" data-group="library"
+  onclick="showInfo('LMS',
+    'The Learning Management System lets faculty upload modules, assign activities, receive submissions, post quizzes, and track student progress for blended and online learning.')">
+  <rect x="558" y="596" width="70" height="32" rx="6" stroke-width="0.5"/>
+  <text class="ts" x="593" y="612" text-anchor="middle" dominant-baseline="central">LMS</text>
+</g>
+
+</svg>
+</div>
+
+<div id="info-box">
+  <div id="info-title">👆 Click any node to learn what it does</div>
+  <div id="info-desc">Use the filter buttons above to highlight a specific module.</div>
+</div>
+
+<script>
+  function showInfo(title, desc, color) {
+    document.getElementById('info-title').textContent = title;
+    document.getElementById('info-desc').textContent = desc;
+    document.getElementById('info-box').style.borderLeftColor = color || '#888780';
+  }
+
+  function highlight(btn, group) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[data-group]').forEach(el => {
+      el.style.opacity = (el.dataset.group === group || el.dataset.group === 'center') ? '1' : '0.15';
+    });
+    const names = {
+      academic: 'Academic Module', finance: 'Finance Module',
+      services: 'Student Services', admin: 'Admin & Security',
+      comms: 'Communication', library: 'Library & Resources'
+    };
+    const descs = {
+      academic: 'Showing: Enrollment, Grades & CoG, and Class Schedules.',
+      finance:  'Showing: Tuition & Fees, Online Payment, and Scholarships.',
+      services: 'Showing: Document Requests, Guidance Office, and Health Services.',
+      admin:    'Showing: User Management, Reports & Analytics, and Audit Logs.',
+      comms:    'Showing: Announcements, Internal Messaging, and Academic Calendar.',
+      library:  'Showing: OPAC, E-Library, and Learning Management System (LMS).'
+    };
+    document.getElementById('info-title').textContent = names[group] || '';
+    document.getElementById('info-desc').textContent = descs[group] || '';
+    document.getElementById('info-box').style.borderLeftColor = '#888780';
+  }
+
+  function showAll(btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[data-group]').forEach(el => { el.style.opacity = '1'; });
+    document.getElementById('info-title').textContent = '👆 Click any node to learn what it does';
+    document.getElementById('info-desc').textContent = 'Use the filter buttons above to highlight a specific module.';
+    document.getElementById('info-box').style.borderLeftColor = '#888780';
+  }
+</script>
+</body>
+</html>
